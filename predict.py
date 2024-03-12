@@ -6,6 +6,7 @@ import cv2
 
 from model import Rec_Transformer
 from utils.data_utils import get_loader
+from tqdm import tqdm
 
 def load_model(load_model_dir, model):
     loaded_dict = torch.load(load_model_dir)
@@ -20,8 +21,8 @@ def setup(load_model_dir,input_size, output_size):
     load_model(load_model_dir, model)
     return model
 
-def predict(color, input_size, output_size, model,test_dir,rec_dir):
-    test_in = np.load(test_dir)
+def predict(color, input_size, output_size, model, file, rec_dir):
+    test_in = np.load(file) 
     if color:
         b, g, r = cv2.split(test_in)
         test_in = np.dstack((r, g, b))
@@ -45,22 +46,30 @@ def predict(color, input_size, output_size, model,test_dir,rec_dir):
         test_in.cuda()
         test_out = model(test_in)
         test_out = test_out.to('cpu').detach().numpy().copy()
-    cv2.imwrite(rec_dir,cv2.normalize(test_out, None, 0, 255, cv2.NORM_MINMAX))
+    saved = cv2.imwrite(rec_dir,cv2.normalize(test_out, None, 0, 255, cv2.NORM_MINMAX))
+    if not saved:
+        raise Exception("OpenCV could not save the image.")
 
 
 
 def main():
     input_size=1600
     output_size=500
-    test_dir='/home/pan/Desktop/vit_rec/Rec_Transformer0824/datasets/final_val/pattern/'
-    files=os.listdir(test_dir)
-    rec_dir='/home/pan/Desktop/vit_rec/Rec_Transformer0824/predict/'
+    test_dir='/home/ponoma/workspace/Lensless_Imaging_Transformer/datasets/test_patterns.npy'
+    files= np.load(test_dir) #os.listdir(test_dir)
+    rec_dir='/home/ponoma/workspace/Lensless_Imaging_Transformer/curr_results'
+    if not os.path.exists(rec_dir):
+        os.makedirs(rec_dir)
 
-    load_model_dir = '/home/pan/Desktop/vit_rec/Rec_Transformer0824/checkpoints_best/best.pth'
+    load_model_dir = '/home/ponoma/workspace/Lensless_Imaging_Transformer/checkpoints/best.pth'
     model = setup(load_model_dir,input_size,output_size)
     model.cuda()
-    for file in files:
-        predict(True, input_size, output_size, model, test_dir+file, rec_dir+'best/'+file[:-3]+'bmp')
+    for file in tqdm(files):
+        rest, image_name = os.path.split(file) # [:-4]        # getting the name of the image and removing the file extension (.npy)
+        folder = os.path.split(rest)[1]
+        if not os.path.exists(os.path.join(rec_dir,folder)):
+            os.makedirs(os.path.join(rec_dir,folder))
+        predict(True, input_size, output_size, model, file, os.path.join(rec_dir, folder, image_name[:-3] + 'bmp'))
 
 if __name__ == "__main__":
     main()

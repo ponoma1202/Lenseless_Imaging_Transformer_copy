@@ -8,19 +8,19 @@ loss:
   LPIPS_t: 0
 
 dir:
-  save_model_dir: /home/pan/Desktop/vit_rec/Rec_Transformer0824/checkpoints/1007.pth
-  load_model_dir: /home/pan/Desktop/vit_rec/Rec_Transformer0824/checkpoints/1007.pth
-  val_pattern_dir: /home/pan/Desktop/vit_rec/Rec_Transformer0824/im1.npy
-  val_rec_dir: /home/pan/Desktop/vit_rec/Rec_Transformer0824/checkpoints/
-  dataset_dir: /home/pan/Desktop/vit_rec/Rec_Transformer0824/datasets/
+  save_model_dir: /home/ponoma/workspace/Lensless_Imaging_Transformer/checkpoints/   
+  load_model_dir: /home/ponoma/workspace/Lensless_Imaging_Transformer/checkpoints/
+  val_pattern_dir: /home/ponoma/workspace/Lensless_Imaging_Transformer/im1.npy    # TODO: what is this?
+  val_rec_dir: /home/ponoma/workspace/Lensless_Imaging_Transformer/checkpoints/
+  dataset_dir: /home/ponoma/workspace/Lensless_Imaging_Transformer/datasets/
 
 
 train:
   GPU_num: 2
-  load: True
+  load: False # TODO: changed this because no model to load
   num_steps: 450000
   eval_every: 15000
-  train_batch_size: 4
+  train_batch_size: 3
 
 optimizer:
   optimizer: AdamW

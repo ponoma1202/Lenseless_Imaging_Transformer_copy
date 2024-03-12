@@ -2,7 +2,9 @@ import torch
 
 from torchvision import transforms, datasets
 from torch.utils.data import DataLoader, RandomSampler, DistributedSampler, SequentialSampler
-from utils.data_prepare import get_data
+import sys
+sys.path.append('/home/ponoma/workspace/Lensless_Imaging_Transformer/utils/')
+from data_prepare import get_data
 
 def get_loader(cfg):
     train_dataset = get_data(
@@ -19,7 +21,7 @@ def get_loader(cfg):
         split='val'
     )
 
-    train_sampler = DistributedSampler(train_dataset, shuffle=True)
+    train_sampler = RandomSampler(train_dataset)
     train_loader = DataLoader(train_dataset,
                               batch_size=cfg.train.train_batch_size,
                               #num_workers=cfg.train.GPU_num*4,

@@ -1,5 +1,7 @@
 import os
-#os.environ["CUDA_VISIBLE_DEVICES"] = '2,3'
+
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID" 
+os.environ["CUDA_VISIBLE_DEVICES"] = '1'
 
 import random
 import logging
@@ -125,7 +127,7 @@ def train(cfg):
     print(untrainable_params)
 
     model.cuda()
-    model = torch.nn.DataParallel(model)
+    #model = torch.nn.DataParallel(model)
 
     # Prepare dataset
     train_loader, val_loader = get_loader(cfg)
@@ -186,6 +188,10 @@ def train(cfg):
             epoch_iterator.set_description(
                 "Training (%d / %d Steps) (loss=%2.5f)" % (global_step, t_total, losses.val)
             )
+
+            if global_step % 1000 == 0:
+                torch.save(model.state_dict(), 'curr_model.pth')
+
             if global_step % cfg.train.eval_every == 0:
                 eval_losses=valid(cfg, model, val_loader, global_step)
                 if best_losses > eval_losses:
@@ -225,9 +231,9 @@ def train(cfg):
     logger.info("Best Loss: \t%f" % best_losses)
     logger.info("End Training!")
 
-def main():
-    dist.init_process_group(backend='nccl')
-    cfg = OmegaConf.load('configs.yaml')
+def main():       
+    #dist.init_process_group(backend='nccl', rank = torch.cuda.device_count(), world_size = 1)  
+    cfg = OmegaConf.load('/home/ponoma/workspace/Lensless_Imaging_Transformer/configs.yaml')
 
     logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
                         datefmt='%m/%d/%Y %H:%M:%S',
