@@ -42,8 +42,8 @@ class AverageMeter(object):
 
 
 def save_model(cfg, model):
-    torch.save(model.module.state_dict(), cfg.dir.save_model_dir)
-    # torch.save(model.state_dict(), cfg.basic.save_model_dir)
+    # torch.save(model.module.state_dict(), cfg.dir.save_model_dir)
+    torch.save(model.state_dict(), os.path.join(cfg.dir.save_model_dir, "best_model.pth"))
 
 
 def load_model(cfg, model):
@@ -55,7 +55,7 @@ def load_model(cfg, model):
 
 
 def setup(cfg):
-    model = Rec_Transformer()
+    model = Rec_Transformer(input_size=cfg.basic.input_size, rec_size=cfg.basic.output_size)               # TODO: added args
     num_params = count_parameters(model)
     logger.info("Total Parameter: \t%2.1fM" % num_params)
 
@@ -190,7 +190,7 @@ def train(cfg):
             )
 
             if global_step % 1000 == 0:
-                torch.save(model.state_dict(), 'curr_model.pth')
+                torch.save(model.state_dict(), os.path.join(cfg.dir.save_model_dir, 'curr_model.pth'))
 
             if global_step % cfg.train.eval_every == 0:
                 eval_losses=valid(cfg, model, val_loader, global_step)

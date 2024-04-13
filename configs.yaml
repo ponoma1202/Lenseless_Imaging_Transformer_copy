@@ -1,5 +1,6 @@
 basic:
   input_size: 1600
+  #input_size: 1024
   output_size: 500
   seed: 1
 

@@ -34,6 +34,14 @@ class get_data(Dataset):
     def __getitem__(self, idx):
         pattern_ = np.load(self.patterns[idx])
         #img = cv2.resize(img, (self.input_size, self.input_size), interpolation=cv2.INTER_AREA)
+        
+        # TODO: added center crop below
+        height, width, _ = pattern_.shape
+        x = (width // 2) - (self.input_size // 2)                   # width // 2 = center_x
+        y = (height // 2) - (self.input_size // 2)                  # self.input_size // 2 = half of image
+        pattern_ = pattern_[x:x+self.input_size, y: y+self.input_size]
+        # TODO: end my code
+
         r, g, b = cv2.split(pattern_)
         pattern_ = np.dstack((b, g, r))
         target_ = cv2.imread(self.targets[idx])
