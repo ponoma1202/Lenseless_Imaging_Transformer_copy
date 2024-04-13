@@ -189,8 +189,9 @@ def train(cfg):
                 "Training (%d / %d Steps) (loss=%2.5f)" % (global_step, t_total, losses.val)
             )
 
-            if global_step % 1000 == 0:
+            if global_step % 2 == 0:
                 torch.save(model.state_dict(), os.path.join(cfg.dir.save_model_dir, 'curr_model.pth'))
+                save_model(cfg, model)
 
             if global_step % cfg.train.eval_every == 0:
                 eval_losses=valid(cfg, model, val_loader, global_step)
