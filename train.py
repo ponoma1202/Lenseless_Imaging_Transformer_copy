@@ -189,7 +189,7 @@ def train(cfg):
                 "Training (%d / %d Steps) (loss=%2.5f)" % (global_step, t_total, losses.val)
             )
 
-            if global_step % 2 == 0:
+            if global_step % 1000 == 0:
                 torch.save(model.state_dict(), os.path.join(cfg.dir.save_model_dir, 'curr_model.pth'))
                 save_model(cfg, model)
 
@@ -199,7 +199,8 @@ def train(cfg):
                     save_model(cfg, model)
                     best_losses = eval_losses
 
-                #save a validation rec image
+                # save a validation rec image. 
+                # save an image from validation run as visual reference while running model - VP
                 test_in = np.load(cfg.dir.val_pattern_dir)
                 r, g, b = cv2.split(test_in)
                 test_in = np.dstack((b, g, r))

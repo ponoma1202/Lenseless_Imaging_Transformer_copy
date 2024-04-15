@@ -1,6 +1,6 @@
 basic:
-  input_size: 1600
-  #input_size: 1024
+  #input_size: 1600
+  input_size: 1024
   output_size: 500
   seed: 1
 
@@ -9,10 +9,10 @@ loss:
   LPIPS_t: 0
 
 dir:
-  save_model_dir: /home/ponoma/workspace/Lensless_Imaging_Transformer/checkpoints/   
-  load_model_dir: /home/ponoma/workspace/Lensless_Imaging_Transformer/checkpoints/
-  val_pattern_dir: /home/ponoma/workspace/Lensless_Imaging_Transformer/im1.npy    # TODO: what is this?
-  val_rec_dir: /home/ponoma/workspace/Lensless_Imaging_Transformer/checkpoints/
+  save_model_dir: /home/ponoma/workspace/Lensless_Imaging_Transformer/1k_images/   
+  load_model_dir: /home/ponoma/workspace/Lensless_Imaging_Transformer/1k_images/
+  val_pattern_dir: '/home/ponoma/workspace/Lensless_Imaging_Transformer/datasets/PetImages_1600/Dog/4625.npy'   # path to an image in val_directory to save as reference
+  val_rec_dir: /home/ponoma/workspace/Lensless_Imaging_Transformer/1k_images/
   dataset_dir: /home/ponoma/workspace/Lensless_Imaging_Transformer/datasets/
 
 
@@ -20,7 +20,7 @@ train:
   GPU_num: 2
   load: False # TODO: changed this because no model to load
   num_steps: 450000
-  eval_every: 15000
+  eval_every: 15000 
   train_batch_size: 3
 
 optimizer:
