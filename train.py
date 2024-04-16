@@ -189,9 +189,8 @@ def train(cfg):
                 "Training (%d / %d Steps) (loss=%2.5f)" % (global_step, t_total, losses.val)
             )
 
-            if global_step % 1000 == 0:
+            if global_step % 1000 == 0:         # TODO: added this if - VP
                 torch.save(model.state_dict(), os.path.join(cfg.dir.save_model_dir, 'curr_model.pth'))
-                save_model(cfg, model)
 
             if global_step % cfg.train.eval_every == 0:
                 eval_losses=valid(cfg, model, val_loader, global_step)
@@ -202,6 +201,14 @@ def train(cfg):
                 # save a validation rec image. 
                 # save an image from validation run as visual reference while running model - VP
                 test_in = np.load(cfg.dir.val_pattern_dir)
+
+                # TODO: Added this after began cropping images - VP
+                height, width, _ = test_in.shape
+                x = (width // 2) - (cfg.basic.input_size // 2)                   # width // 2 = center_x
+                y = (height // 2) - (cfg.basic.input_size // 2)                  # cfg.basic.input_size // 2 = half of image
+                test_in = test_in[x:x+cfg.basic.input_size, y: y+cfg.basic.input_size]
+                # TODO: End my code
+                
                 r, g, b = cv2.split(test_in)
                 test_in = np.dstack((b, g, r))
                 test_out = np.zeros((cfg.basic.output_size, cfg.basic.output_size, 3))
@@ -241,6 +248,8 @@ def main():
                         datefmt='%m/%d/%Y %H:%M:%S',
                         level=logging.INFO)
     set_seed(cfg)
+    if not os.path.exists(cfg.dir.save_model_dir):          # TODO: added this for saving purposes - VP
+        os.mkdir(cfg.dir.save_model_dir)
     '''
     model = setup(cfg)
     print(model)
